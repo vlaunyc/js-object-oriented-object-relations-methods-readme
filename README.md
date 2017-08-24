@@ -1,151 +1,124 @@
-# Object Methods and Classes
+# Associating Objects in Javascript
 
 ## Objectives
-+ Explain what a method is and the difference between a method and a function.
-+ Add an action to a constructor function.
-+ Explain what `this` is in the context of an object.
-+ Create ES6 classes.
-+ Explain ES6 class inheritance with `extends`.
++ Learn how to build methods to select associated objects.
++ Learn how to build methods to find objects by certain attributes.
 
-## Introduction
-Objects have both data and behavior. Data comes in the form of properties that store information, such as the `length` of an array, or the `name` of a Person. But objects also can have properties that store behavior, or functions, such as the `slice()` method of an array. When a function is a property of an object, it is known as a *method* of that object.
+### Associating Objects
+In the previous lesson we saw how to associate objects through use of a store and adding functionality to our JavaScript classes.  Let's take another look at that code.
 
-## Adding Methods to an Object
-Let's create a constructor function for some `User` objects.
+```javascript
+let store = {rooms: [], hotels: []}
+// initialize store with key of rooms and hotels that each point to an empty array
 
-```js
-function User (name, email){
-  this.name = name;
-  this.email = email;
-}
-```
+let hotelId = 0
 
-How do we give our JavaScript user objects the ability to say hello?
+class Hotel {
+  constructor(name){
+    this.id = ++hotelId
+    this.name = name
 
-We already know how to create functions.  Now we need to attach a function to an object as a property.
-
-```js
-function User (name, email){
-  this.name = name;
-  this.email = email;
-  this.sayHello = function(){
-    console.log("Hello, my name is " + this.name);
-  }
-}
-```
-
-We've now added the `sayHello` method to our `User` constructor function. Because a method is just a function that is attached to an object via a property, `sayHello` is a method. We call `User` a function, and not a method, because it's a standalone function and not a property of any object.
-
-It's a semantic distinction. All methods are also functions. We just use "method" as a convention when we communicate that lets other people know that we mean a function that is part of an object.
-
-It's important to note that we use `this` twice in relation to the `sayHello` method. We use it once: `this.sayHello`, where `this` is referencing the object we'll create (as long as we invoke the function with the `new` keyword).  The `this` keyword is probably the most confusing concept in JS so for now let's just assume it works like Ruby's `self` and refers to the instance of the object we're refering to.
-
-Let's make a few users:
-
-```js
-carl = new User("Carl", "sparkles@aol.com");
-
-betsy = new User("Betsy", "betsy@flatironschool.com")
-
-george = new User("George", "george@me.com")
-```
-We can have the users greet us too:
-
-```js
-carl.sayHello();
-// prints "Hello, my name is Carl" to the console
-betsy.sayHello();
-// prints "Hello, my name is Betsy" to the console
-george.sayHello();
-// prints "Hello, my name is George" to the console
-```
-
-But there's a problem here. When we build the method directly into the constructor function like this, we're using a lot of space in memory. Every single time a `User` object is created and stored in memory, the `sayHello` function is created and stored in memory with it. What if you're Facebook and have 1.19 billion active users a month? If you were to instantiate all those users at once, you'd be recreating that function in memory 1.19 billion times! (Incidentally, this is how Ruby does it.)
-
-## Add Method to Prototype
-Javascript objects have something called a Prototype.  For now, we won't get into an extremely detailed discussion of what Prototypes are, but we will use them as a place to keep our "instance" methods.  In Javascript, when you call a property, the interpreter will look on the instance of the object for a property, and when it finds none, it will look at the Object's Prototype for that property.  If we've attached a function as the property of that name it will call that function in a similar way that Ruby's method lookup chain works.
-
-```js
-function User(name, email) {
-  this.name = name;
-  this.email = email;
-}
-
-User.prototype.sayHello = function() {
-  console.log("Hello, my name is "+ this.name);
-}
-
-var sarah = new User("sarah", "sarah@aol.com");
-
-sarah.sayHello();
-```
-
-For all intents and purposes, we've created a JS class following a common pattern that combines the use of constructor functions with extending behavior via the object's prototype. This works, but is incredibly verbose, and you always run the risk of forgetting to add methods to the prototype instead of directly to the constructor.
-
-It would be nice if there were an approach that allowed us to construct true *classes* while still taking advantage of the prototypal nature of JavaScript. But there's no way to do that.
-
-OR IS THERE?
-
-(There is.)
-
-## ES6 Classes
-ECMAScript 6 introduces the concept of a `class` to JavaScript that provides a handy shortcut for organizing our objects.
-
-It's important to note that the `class` keyword doesn't actually turn JavaScript into a class-based object-oriented paradigm. It's just *syntactic sugar*, or a nice abstraction, over the prototypal object creation we've been doing.
-
-Let's convert our user to a class.
-
-```js
-class User {
-  constructor(name, email) {
-    this.name = name;
-    this.email = email;
-  }
-
-  sayHello() {
-    console.log("Hello, my name is "+ this.name);
+    // insert in the hotel to the store
+    store.hotels.push(this)
   }
 }
 
-var sarah = new User("Sarah", "sarah@aol.com");
-sarah.sayHello();
-```
+let roomId = 0
 
-Instead of our `User` constructor function, we now have a `class User`. Within the body of the class, we can define a special function named `constructor` to be our constructor function. In the end, we still instantiate a `new User` the same way.
-
-We also define our `sayHello` function directly in the body of the class. However, unlike defining it in the constructor function, we can verify that `sayHello` is defined on the User prototype by examining `User.prototype`.
-
-## ES6 Class Inheritance With extends
-
-We can also easily inherit from ES6 classes without having to go through the trouble of assigning `prototype` via `Object.create`.
-
-Say we want to create a `Teacher` class for our school system that inherits from `User`. We can just define a new class and use the `extends` keyword.
-
-```js
-class Teacher extends User {
-    sayHello() {
-      super.sayHello()
-      console.log("I am a teacher");
+class Room {
+  constructor(roomNumber, squareFeet, hotel){
+    this.id = ++roomId
+    this.squareFeet = squareFeet
+    this.roomNumber = roomNumber
+    if(hotel){
+      this.hotelId = hotel.id
     }
+
+    // insert in the room to the store
+    store.rooms.push(this)
+  }
+  setHotel(hotel){
+    this.hotelId = hotel.id
+  }
 }
 
-var t = new Teacher("Tom", "tom@geocities.edu")
-t.sayHello()
+let forest = new Hotel("The Forest Hotel")
+let forestRoom = new Room(213, 240, forest)
+let penthouseForestRoom = new Room(1200, 500, forest)
+
+store
+// {hotels: [{id: 1, name: "The Forest Hotel"}], rooms: [{id: 1, number: 213, squareFeet: 240, hotelId: 1},
+// {id: 2, number: 1200, squareFeet: 500, hotelId: 1}
+// ]}
 ```
 
-Here, we've *extended*, or inherited from `User` when creating the new `Teacher` class. We also created an *override* to the `sayHello` method so that it would reflect our teacher object better.
+Now the next thing we need to do is build some methods that would select the associated data.  For example, if we want to find all of the rooms associated with the first hotel, we would like to write a method called `rooms()` that would retrieve all of the rooms associated with the first hotel:
 
-If you look at the line `super.sayHello()`, what we're doing there is calling the `sayHello` method of the *superclass*, or the class (`User`) that our `Teacher` class inherits from. We wanted to preserve the behavior that was already there and then add to it, so rather than repeat the code, the `super` object gives us access to it programmatically.
+```js
+  let forestHotel = store.hotels[0]  
+  forestHotel.rooms()
+  // we want this to return our first two rooms in our store, but currently this method is not implemented
+```
+
+Ok, now how would we implement a method on our hotel object that finds the associated rooms?  Well, the way we can identify the rooms associated with the first hotel is go to our store, and go through each of the rooms in our store and return the ones with a hotelId equal to 1.  We can use JavaScript's `filter` method to do just that.  Let's go for it!
+
+```javascript
+class Hotel {
+  constructor(name){
+    this.id = ++hotelId
+    this.name = name
+
+    // insert in the hotel to the store
+    store.hotels.push(this)
+  }
+  rooms(){
+    return store.rooms.filter(function(room){
+      return room.hotelId === this.id
+    })
+  }
+}
+```
+
+So you can see that the code above uses the filter method to go through the rooms in the store and return each of the rooms that have a hotelId equal to the id of the hotel receiving the rooms method call.  Ok, that was the hard one, now let's write a method such that we can call `room.hotel()` and the hotel associated with the room is returned.
+
+```js
+
+class Room {
+  constructor(roomNumber, squareFeet, hotel){
+    this.id = ++roomId
+    this.squareFeet = squareFeet
+    this.roomNumber = roomNumber
+    if(hotel){
+      this.hotelId = hotel.id
+    }
+
+    // insert in the room to the store
+    store.rooms.push(this)
+  }
+  setHotel(hotel){
+    this.hotelId = hotel.id
+  }
+  hotel(){
+    return store.hotels.find(function(hotel){
+      return hotel.id === this.hotelId
+    })
+  }
+}
+
+let hotel = new Hotel('Nightcrawl')
+let room = new Room(242, 250, hotel)
+room.hotel()
+// {id: 2, name: 'Nightcrawl'}
+```
+
+Unlike our use of the `filter` method, JavaScript's `find` method only returns the first matching element from the array.  With our `rooms()` added to our hotel objects and the `hotel()` method added to our room objects  we have set up our relationship in both directions.
 
 ## Summary
 
-In this lesson, we've learned the differences between methods and functions, and seen how to add methods to objects through both the constructor and the prototype.
-
-We also explored the new `class` syntax of ES6 and how to create and extend classes using it.
+In this lesson, we saw how to write methods to select our associated data.  We saw that by using JavaScript's `filter` and `find` methods we can search the store to return the proper JavaScript objects when our methods are called.
 
 ## Resources
 
-+ [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
-+ [MDN: Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
++ [Sql Relations](https://github.com/learn-co-curriculum/sql-table-relations-readme)
 
-<p data-visibility='hidden'>View <a href='https://learn.co/lessons/js-object-methods-readme'>Object Methods in JS</a> on Learn.co and start learning to code for free.</p>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/js-classes-readme'>Classes in JS</a> on Learn.co and start learning to code for free.</p>
