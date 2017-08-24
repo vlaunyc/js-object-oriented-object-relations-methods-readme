@@ -1,4 +1,4 @@
-# Associating Objects in Javascript
+# Association Methods in Javascript
 
 ## Objectives
 + Learn how to build methods to select associated objects.
