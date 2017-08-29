@@ -79,7 +79,7 @@ class Hotel {
 }
 ```
 
-So you can see that the code above uses the filter method to go through the rooms in the store and return each of the rooms that have a hotelId equal to the id of the hotel receiving the rooms method call.  Ok, that was the hard one, now let's write a method such that we can call `room.hotel()` and the hotel associated with the room is returned.
+So you can see that the code above uses the `filter` method to go through the rooms in the store and return each of the rooms that have a hotelId equal to the id of the hotel receiving the rooms method call.  Ok, that was the hard one, now let's write a method `room.hotel()` such that the hotel associated with the room is returned.
 
 ```js
 
@@ -120,5 +120,7 @@ In this lesson, we saw how to write methods to select our associated data.  We s
 ## Resources
 
 + [Sql Relations](https://github.com/learn-co-curriculum/sql-table-relations-readme)
++ [MDN Filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
++ [MDN Find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
 
-<p data-visibility='hidden'>View <a href='https://learn.co/lessons/js-classes-readme'>Classes in JS</a> on Learn.co and start learning to code for free.</p>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/js-object-oriented-object-relations-methods-readme'>Object Relations Methods Readme</a> on Learn.co and start learning to code for free.</p>
