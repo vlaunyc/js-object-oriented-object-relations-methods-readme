@@ -8,114 +8,114 @@
 In the previous lesson we saw how to associate objects through use of a store and adding functionality to our JavaScript classes.  Let's take another look at that code.
 
 ```javascript
-let store = {rooms: [], hotels: []}
-// initialize store with key of rooms and hotels that each point to an empty array
+let store = {users: [], items: []}
+// initialize store with key of items and users that each point to an empty array
 
-let hotelId = 0
+let userId = 0
 
-class Hotel {
+class User {
   constructor(name){
-    this.id = ++hotelId
+    this.id = ++userId
     this.name = name
 
-    // insert in the hotel to the store
-    store.hotels.push(this)
+    // insert in the user to the store
+    store.users.push(this)
   }
 }
 
-let roomId = 0
+let itemId = 0
 
-class Room {
-  constructor(roomNumber, squareFeet, hotel){
-    this.id = ++roomId
-    this.squareFeet = squareFeet
-    this.roomNumber = roomNumber
-    if(hotel){
-      this.hotelId = hotel.id
+class Item {
+  constructor(name, price, user){
+    this.id = ++itemId
+    this.name = name
+    this.price = price
+    if(user){
+      this.userId = user.id
     }
 
-    // insert in the room to the store
-    store.rooms.push(this)
+    // insert in the item to the store
+    store.items.push(this)
   }
-  setHotel(hotel){
-    this.hotelId = hotel.id
+  setUser(user){
+    this.userId = user.id
   }
 }
 
-let forest = new Hotel("The Forest Hotel")
-let forestRoom = new Room(213, 240, forest)
-let penthouseForestRoom = new Room(1200, 500, forest)
+let bobby = new User("bobby")
+let sally = new User("sally")
+let trousers = new Item('trousers', 24, bobby)
+let tshirt = new Item('tshirt', 8, bobby)
+let socks = new Item('socks', 3, sally)
 
 store
-// {hotels: [{id: 1, name: "The Forest Hotel"}], rooms: [{id: 1, number: 213, squareFeet: 240, hotelId: 1},
-// {id: 2, number: 1200, squareFeet: 500, hotelId: 1}
-// ]}
+// {users: [{id: 1, name: 'Bobby'}, {id: 2, name: 'Sally'}], items: [{id: 1, name: 'trousers', price: 24, userId: 1}, {id: 2, name: 'tshirt', price: 8, userId: 1}, {id: 3, name: 'socks', price: 3, userId: 2}]}
 ```
 
-Now the next thing we need to do is build some methods that would select the associated data.  For example, if we want to find all of the rooms associated with the first hotel, we would like to write a method called `rooms()` that would retrieve all of the rooms associated with the first hotel:
+Now the next thing we need to do is build some methods that would select the associated data.  For example, if we want to find all of the items associated with the first user, we would like to write a method called `items()` that would retrieve all of the items associated with the first user:
 
 ```js
-  let forestHotel = store.hotels[0]  
-  forestHotel.rooms()
-  // we want this to return our first two rooms in our store, but currently this method is not implemented
+  let bobby = store.users[0]  
+  bobby.items()
+  // we want this to return our first two items in our store, but currently this method is not implemented
 ```
 
-Ok, now how would we implement a method on our hotel object that finds the associated rooms?  Well, the way we can identify the rooms associated with the first hotel is go to our store, and go through each of the rooms in our store and return the ones with a hotelId equal to 1.  We can use JavaScript's `filter` method to do just that.  Let's go for it!
+Ok, now how would we implement a method on our user object that finds the associated items?  Well, the way we can identify the items associated with the first user is go to our store, and go through each of the items in our `store` and return the ones with a `userId` equal to 1.  We can use JavaScript's `filter` method to do just that.  Let's go for it!
 
 ```javascript
-class Hotel {
+class User {
   constructor(name){
-    this.id = ++hotelId
+    this.id = ++userId
     this.name = name
 
-    // insert in the hotel to the store
-    store.hotels.push(this)
+    // insert in the user to the store
+    store.users.push(this)
   }
-  rooms(){
-    return store.rooms.filter(function(room){
-      return room.hotelId === this.id
+  items(){
+    return store.items.filter(function(item){
+      return item.userId === this.id
     })
   }
 }
 ```
 
-So you can see that the code above uses the `filter` method to go through the rooms in the store and return each of the rooms that have a hotelId equal to the id of the hotel receiving the rooms method call.  Ok, that was the hard one, now let's write a method `room.hotel()` such that the hotel associated with the room is returned.
+So you can see that the code above uses the `filter` method to go through the items in the `store` and return each of the items that have a `userId` equal to the id of the user receiving the items method call.  Ok, that was the hard one, now let's write a method `item.user()` such that the user associated with the item is returned.
 
 ```js
 
-class Room {
-  constructor(roomNumber, squareFeet, hotel){
-    this.id = ++roomId
-    this.squareFeet = squareFeet
-    this.roomNumber = roomNumber
-    if(hotel){
-      this.hotelId = hotel.id
+class Item {
+  constructor(name, price, user){
+    this.id = ++itemId
+    this.name = name
+    this.price = price
+    if(user){
+      this.userId = user.id
     }
 
-    // insert in the room to the store
-    store.rooms.push(this)
+    // insert in the item to the store
+    store.items.push(this)
   }
-  setHotel(hotel){
-    this.hotelId = hotel.id
+  setUser(user){
+    this.userId = user.id
   }
-  hotel(){
-    return store.hotels.find(function(hotel){
-      return hotel.id === this.hotelId
+  user(){
+    return store.users.find(function(user){
+      return user.id === this.userId
     })
   }
 }
 
-let hotel = new Hotel('Nightcrawl')
-let room = new Room(242, 250, hotel)
-room.hotel()
-// {id: 2, name: 'Nightcrawl'}
+let user = new User('Freddie')
+let item = new Item('socks', 3, user)
+item.user()
+// {id: 3, name: 'Freddie'}
 ```
 
-Unlike our use of the `filter` method, JavaScript's `find` method only returns the first matching element from the array.  With our `rooms()` added to our hotel objects and the `hotel()` method added to our room objects  we have set up our relationship in both directions.
+Unlike our use of the `filter` method, JavaScript's `find` method only returns the first matching element from the array.  With our `items()` added to our user objects and the `user()` method added to our item objects  we have set up our relationship in both directions.
 
 ## Summary
 
-In this lesson, we saw how to write methods to select our associated data.  We saw that by using JavaScript's `filter` and `find` methods we can search the store to return the proper JavaScript objects when our methods are called.
+In this lesson, we saw how to write methods to select our associated data.  We saw that by using JavaScript's `filter` and `find` methods we can search the `store` to return the proper JavaScript objects when our methods are called.
 
 ## Resources
 
