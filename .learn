@@ -1,6 +1,8 @@
 tags:
-  - a tag
+  - filter
+  - find
+  - store
 languages:
-  - a language
+  - javascript
 resources: 
-  - 1
+  - 3
