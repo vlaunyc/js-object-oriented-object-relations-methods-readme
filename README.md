@@ -72,7 +72,7 @@ class User {
     store.users.push(this)
   }
   items(){
-    return store.items.filter(function(item){
+    return store.items.filter(item => {
       return item.userId === this.id
     })
   }
