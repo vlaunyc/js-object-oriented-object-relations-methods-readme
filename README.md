@@ -99,16 +99,25 @@ class Item {
     this.userId = user.id
   }
   user(){
-    return store.users.find(function(user){
-      return user.id === this.userId
+    return store.users.find(user => {
+      return user.id === this.userId 
     })
   }
 }
 
-let user = new User('Freddie')
-let item = new Item('socks', 3, user)
-item.user()
-// {id: 3, name: 'Freddie'}
+let bobby = new User("bobby")
+let sally = new User("sally")
+let trousers = new Item('trousers', 24, bobby)
+let tshirt = new Item('tshirt', 8, bobby)
+let socks = new Item('socks', 3, sally)
+
+bobby.items()
+// Item {id: 1, name: "trousers", price: 24, userId: 1}
+// Item {id: 2, name: "tshirt", price: 8, userId: 1}
+
+socks.user()
+// User {id: 2, name: "sally"}
+
 ```
 
 Unlike our use of the `filter` method, JavaScript's `find` method only returns the first matching element from the array.  With our `items()` added to our user objects and the `user()` method added to our item objects  we have set up our relationship in both directions.
